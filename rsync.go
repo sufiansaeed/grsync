@@ -214,6 +214,17 @@ func NewRsync(source, destination string, options RsyncOptions) *Rsync {
 	}
 }
 
+// NewCustomRsync returns task with described options
+func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions) *Rsync {
+
+	arguments := append(append(getArguments(options), sources...), destination)
+	return &Rsync{
+		Source:      strings.Join(sources, ","),
+		Destination: destination,
+		cmd:         exec.Command(bin, arguments...),
+	}
+}
+
 func getArguments(options RsyncOptions) []string {
 	arguments := []string{}
 	if options.Verbose {

@@ -78,6 +78,21 @@ func NewTask(source, destination string, rsyncOptions RsyncOptions) *Task {
 	}
 }
 
+// NewCustomTask returns new rsync task with custom binary
+func NewCustomTask(bin string, source []string, destination string, rsyncOptions RsyncOptions) *Task {
+	// Force set required options
+	rsyncOptions.HumanReadable = true
+	rsyncOptions.Partial = true
+	rsyncOptions.Progress = true
+	rsyncOptions.Archive = true
+
+	return &Task{
+		rsync: NewCustomRsync(bin, source, destination, rsyncOptions),
+		state: &State{},
+		log:   &Log{},
+	}
+}
+
 func processStdout(task *Task, stdout io.Reader) {
 	const maxPercents = float64(100)
 	const minDivider = 1

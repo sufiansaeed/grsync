@@ -1,4 +1,4 @@
-module github.com/zloylos/grsync
+module github.com/ahab94/grsync
 
 go 1.13
 
