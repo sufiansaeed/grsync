@@ -209,10 +209,13 @@ func NewRsync(source, destination string, options RsyncOptions) *Rsync {
 }
 
 // NewCustomRsync returns task with described options
-func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions, envs ...string) *Rsync {
+func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions, workdir string, envs ...string) *Rsync {
 	arguments := append(append(getArguments(options), sources...), destination)
 	cmd := exec.Command(bin, arguments...)
 	cmd.Env = append(os.Environ(), envs...)
+	if workdir != "" {
+		cmd.Dir = workdir
+	}
 
 	return &Rsync{
 		Source:      strings.Join(sources, ","),

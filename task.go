@@ -79,7 +79,7 @@ func NewTask(source, destination string, rsyncOptions RsyncOptions) *Task {
 }
 
 // NewCustomTask returns new rsync task with custom binary
-func NewCustomTask(bin string, source []string, destination string, rsyncOptions RsyncOptions, envs ...string) *Task {
+func NewCustomTask(bin string, source []string, destination string, rsyncOptions RsyncOptions, workdir string, envs ...string) *Task {
 	// Force set required options
 	rsyncOptions.HumanReadable = true
 	rsyncOptions.Partial = true
@@ -87,7 +87,7 @@ func NewCustomTask(bin string, source []string, destination string, rsyncOptions
 	rsyncOptions.Archive = true
 
 	return &Task{
-		rsync: NewCustomRsync(bin, source, destination, rsyncOptions, envs...),
+		rsync: NewCustomRsync(bin, source, destination, rsyncOptions, workdir, envs...),
 		state: &State{},
 		log:   &Log{},
 	}
