@@ -191,12 +191,6 @@ func (r Rsync) StderrPipe() (io.ReadCloser, error) {
 
 // Run start rsync task
 func (r Rsync) Run() error {
-	if !isExist(r.Destination) {
-		if err := createDir(r.Destination); err != nil {
-			return err
-		}
-	}
-
 	if err := r.cmd.Start(); err != nil {
 		return err
 	}
@@ -538,17 +532,4 @@ func getArguments(options RsyncOptions) []string {
 	}
 
 	return arguments
-}
-
-func createDir(dir string) error {
-	cmd := exec.Command("mkdir", "-p", dir)
-	if err := cmd.Start(); err != nil {
-		return err
-	}
-	return cmd.Wait()
-}
-
-func isExist(p string) bool {
-	stat, err := os.Stat(p)
-	return os.IsExist(err) && stat.IsDir()
 }
