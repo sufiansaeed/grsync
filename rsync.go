@@ -191,6 +191,7 @@ func (r Rsync) StderrPipe() (io.ReadCloser, error) {
 
 // Run start rsync task
 func (r Rsync) Run() error {
+	log().Debugf("executing command %s", r.cmd.String())
 	if err := r.cmd.Start(); err != nil {
 		return err
 	}
@@ -210,7 +211,7 @@ func NewRsync(source, destination string, options RsyncOptions) *Rsync {
 
 // NewCustomRsync returns task with described options
 func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions, workdir string, envs ...string) *Rsync {
-	arguments := append(append(getArguments(options), sources...), destination)
+	arguments := append(append(getArguments(options), append([]string{"--"}, sources...)...), destination)
 	cmd := exec.Command(bin, arguments...)
 	cmd.Env = append(os.Environ(), envs...)
 	if workdir != "" {
