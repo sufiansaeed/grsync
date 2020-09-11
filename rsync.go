@@ -191,6 +191,7 @@ func (r Rsync) StderrPipe() (io.ReadCloser, error) {
 
 // Run start rsync task
 func (r Rsync) Run() error {
+	log().Debugf("executing command %s", r.cmd.String())
 	if err := r.cmd.Start(); err != nil {
 		return err
 	}
