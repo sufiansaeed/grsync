@@ -259,13 +259,6 @@ func TestParseArguments(t *testing.T) {
 		assert.ElementsMatch(t, args, []string{"--block-size", "1"})
 	})
 
-	t.Run("--rsh", func(t *testing.T) {
-		args := getArguments(RsyncOptions{
-			Rsh: "test",
-		})
-		assert.Contains(t, args, "--rsh", "test")
-	})
-
 	t.Run("--rsync-programm", func(t *testing.T) {
 		args := getArguments(RsyncOptions{
 			RsyncProgramm: "test",
