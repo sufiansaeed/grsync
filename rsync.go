@@ -1,9 +1,11 @@
 package grsync
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"os/exec"
+	"runtime"
 	"strconv"
 	"strings"
 )
@@ -212,8 +214,13 @@ func NewRsync(source, destination string, options RsyncOptions) *Rsync {
 // NewCustomRsync returns task with described options
 func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions, workdir string, envs ...string) *Rsync {
 	arguments := append(append(getArguments(options), append([]string{"--"}, sources...)...), destination)
-	cmd := exec.Command(bin, arguments...)
+	cmd := exec.Command("sh", "-c", fmt.Sprintf("%s %s", bin, strings.Join(arguments, " ")))
+	if runtime.GOOS == "windows" {
+		cmd = exec.Command("cmd", "/V", "/C", fmt.Sprintf("%s %s", bin, strings.Join(arguments, " ")))
+	}
+
 	cmd.Env = append(os.Environ(), envs...)
+
 	if workdir != "" {
 		cmd.Dir = workdir
 	}
@@ -372,7 +379,7 @@ func getArguments(options RsyncOptions) []string {
 	}
 
 	if options.Rsh != "" {
-		arguments = append(arguments, "--rsh", options.Rsh)
+		arguments = append(arguments, fmt.Sprintf("%s=%s", "--rsh", options.Rsh))
 	}
 
 	if options.RsyncProgramm != "" {
