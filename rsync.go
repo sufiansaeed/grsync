@@ -215,12 +215,16 @@ func NewRsync(source, destination string, options RsyncOptions) *Rsync {
 func NewCustomRsync(bin string, sources []string, destination string, options RsyncOptions, workdir string, envs ...string) *Rsync {
 	arguments := append(append(getArguments(options), append([]string{"--"}, sources...)...), destination)
 	cmd := exec.Command("sh", "-c", fmt.Sprintf("%s %s", bin, strings.Join(arguments, " ")))
+
+	log().Warn("RSYNC COMMAND IS: ", cmd)
+
 	if runtime.GOOS == "windows" {
 		cmd = exec.Command("cmd", "/V", "/C", fmt.Sprintf("%s %s", bin, strings.Join(arguments, " ")))
 	}
 
 	cmd.Env = append(os.Environ(), envs...)
-
+	out, _ := cmd.Output()
+	log().Warn("RSYNC OUTPUT IS: ", string(out))
 	if workdir != "" {
 		cmd.Dir = workdir
 	}
